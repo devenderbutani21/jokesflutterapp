@@ -4,7 +4,7 @@ class JokeModel {
   final String type;
   final String setup;
   final String delivery;
-  final List<bool> flags;
+  // final List<bool> flags;
   final num id;
   final String lang;
 
@@ -14,7 +14,7 @@ class JokeModel {
     this.type,
     this.setup,
     this.delivery,
-    this.flags,
+    // this.flags,
     this.id,
     this.lang,
   });
@@ -26,7 +26,7 @@ class JokeModel {
     type : json['type'],
     setup : json['setup'],
     delivery : json['delivery'],
-    flags : json['flags'],
+    // flags : json['flags'],
     id : json['id'],
     lang : json['lang'],
     );

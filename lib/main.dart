@@ -42,35 +42,52 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getPostInfo();
+  }
+
+  @override
   build(BuildContext context) {
     return FutureBuilder<JokeModel>(
       future: getPostInfo(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          print('Data');
-          if(snapshot.data !=null) {
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.data != null && snapshot.hasData) {
             JokeModel _jokeModel = snapshot.data;
             return SafeArea(
               child: Scaffold(
                 body: Column(
                   children: <Widget>[
-                    Text('${_jokeModel.setup.toString()}'),
-                    Text('${_jokeModel.delivery.toString()}'),
+                    Container(
+                      margin: EdgeInsets.all(10.0),
+                      child: Text(
+                        '${_jokeModel.setup.toString()}',
+                        softWrap: true,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(10.0),
+                      child: Text(
+                        '${_jokeModel.delivery.toString()}',
+                        softWrap: true,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
             );
-          } else {
-            print('No Data');
           }
         } else {
-          // return SafeArea(
-          //   child: Scaffold(
-          //     body: Center(
-          //       child: Text('No Data'),
-          //     ),
-          //   ),
-          // );
+          CircularProgressIndicator();
         }
       },
     );
