@@ -34,7 +34,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
     var response = await http.get(url);
     if (response.statusCode == 200) {
-      print('Data Found');
       return JokeModel.fromJson(json.decode(response.body));
     } else {
       throw Exception('Cant Load Data');
@@ -52,43 +51,41 @@ class _MyHomePageState extends State<MyHomePage> {
     return FutureBuilder<JokeModel>(
       future: getPostInfo(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.data != null && snapshot.hasData) {
-            JokeModel _jokeModel = snapshot.data;
-            return SafeArea(
-              child: Scaffold(
-                body: Column(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.all(10.0),
-                      child: Text(
-                        '${_jokeModel.setup.toString()}',
-                        softWrap: true,
-                        style: TextStyle(
-                          fontSize: 22,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.all(10.0),
-                      child: Text(
-                        '${_jokeModel.delivery.toString()}',
-                        softWrap: true,
-                        style: TextStyle(
-                          fontSize: 22,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }
-        } else {
+        if (snapshot.connectionState == ConnectionState.none &&
+            snapshot.hasData == null) {
           CircularProgressIndicator();
         }
+        JokeModel _jokeModel = snapshot.data;
+        return SafeArea(
+          child: Scaffold(
+            body: Column(
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.all(10.0),
+                  child: Text(
+                    '${_jokeModel.setup.toString()}',
+                    softWrap: true,
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.all(10.0),
+                  child: Text(
+                    '${_jokeModel.delivery.toString()}',
+                    softWrap: true,
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
   }
