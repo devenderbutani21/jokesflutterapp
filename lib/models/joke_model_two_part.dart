@@ -1,14 +1,14 @@
-class JokeModel {
+class JokeModelTwoPart {
   final bool error;
   final String category;
   final String type;
   final String setup;
   final String delivery;
-  // final List<bool> flags;
+  // final Map<String,bool> flags;
   final num id;
   final String lang;
 
-  JokeModel({
+  JokeModelTwoPart({
     this.error,
     this.category,
     this.type,
@@ -19,8 +19,8 @@ class JokeModel {
     this.lang,
   });
 
-  factory JokeModel.fromJson(Map<String, dynamic> json) {
-    return JokeModel(
+  factory JokeModelTwoPart.fromJson(Map<String, dynamic> json) {
+    return JokeModelTwoPart(
     error : json['error'],
     category : json['category'],
     type : json['type'],

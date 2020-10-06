@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'joke_model.dart';
+import './models/joke_model_two_part.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,12 +30,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Future<JokeModel> getPostInfo() async {
+  Future<JokeModelTwoPart> getPostInfo() async {
     String url = 'https://sv443.net/jokeapi/v2/joke/Any?type=twopart';
 
     var response = await http.get(url);
     if (response.statusCode == 200) {
-      return JokeModel.fromJson(json.decode(response.body));
+      return JokeModelTwoPart.fromJson(json.decode(response.body));
     } else {
       throw Exception('Cant Load Data');
     }
@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
-    return FutureBuilder<JokeModel>(
+    return FutureBuilder<JokeModelTwoPart>(
       future: getPostInfo(),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
@@ -58,8 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Scaffold(
               body: Center(
                 child: SizedBox(
-                  height: deviceSize.width/8,
-                  width: deviceSize.width/8,
+                  height: deviceSize.width / 8,
+                  width: deviceSize.width / 8,
                   child: CircularProgressIndicator(),
                 ),
               ),
@@ -67,16 +67,29 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         } else {
           if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
+            return SafeArea(
+              child: Scaffold(
+                body: Center(
+                  child: Text(
+                    snapshot.error.toString(),
+                    softWrap: true,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            );
           } else {
             if (snapshot.hasData) {
-              JokeModel _jokeModel = snapshot.data;
+              JokeModelTwoPart _jokeModel = snapshot.data;
               return SafeArea(
                 child: Scaffold(
                   appBar: AppBar(
                     title: Center(
                       child: Text(
-                        'What The Joke?',
+                        'What The Joke',
                         style: TextStyle(
                           fontSize: 28,
                           color: Colors.black,
@@ -87,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   body: Column(
                     children: <Widget>[
                       Container(
-                        height: deviceSize.height * 1/8,
+                        height: deviceSize.height * 1 / 8,
                         width: deviceSize.width * 0.9,
                         margin: EdgeInsets.all(20.0),
                         child: Text(
@@ -102,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       Container(
-                        height: deviceSize.height * 1/8,
+                        height: deviceSize.height * 1 / 8,
                         width: deviceSize.width * 0.9,
                         margin: EdgeInsets.all(10.0),
                         child: Text(
@@ -144,7 +157,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               );
             } else {
-              return Text('No Data');
+              return SafeArea(
+                child: Scaffold(
+                  body: Center(
+                    child: Text(
+                      'No Data',
+                      softWrap: true,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              );
             }
           }
         }
