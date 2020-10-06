@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    getPostInfo();
+    // getPostInfo();
   }
 
   @override
@@ -53,83 +53,101 @@ class _MyHomePageState extends State<MyHomePage> {
     return FutureBuilder<JokeModel>(
       future: getPostInfo(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.none &&
-            snapshot.hasData == null) {
-          CircularProgressIndicator();
-        }
-        JokeModel _jokeModel = snapshot.data;
-        return SafeArea(
-          child: Scaffold(
-            appBar: AppBar(
-              title: Center(
-                child: Text(
-                  'What The Joke?',
-                  style: TextStyle(
-                    fontSize: 28,
-                    color: Colors.black,
-                  ),
+        if (snapshot.connectionState != ConnectionState.done) {
+          return SafeArea(
+            child: Scaffold(
+              body: Center(
+                child: SizedBox(
+                  height: deviceSize.width/8,
+                  width: deviceSize.width/8,
+                  child: CircularProgressIndicator(),
                 ),
               ),
             ),
-            body: Column(
-              children: <Widget>[
-                Container(
-                  // height: deviceSize.height * 1/8,
-                  // width: deviceSize.width * 0.9,
-                  margin: EdgeInsets.all(20.0),
-                  child: Text(
-                    '${_jokeModel.setup.toString()}',
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                Container(
-                  // height: deviceSize.height * 1/8,
-                  // width: deviceSize.width * 0.9,
-                  margin: EdgeInsets.all(10.0),
-                  child: Text(
-                    '${_jokeModel.delivery.toString()}',
-                    softWrap: true,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: deviceSize.height * 1 / 20,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: MaterialButton(
-                    child: Text(
-                      'Next',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+          );
+        } else {
+          if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          } else {
+            if (snapshot.hasData) {
+              JokeModel _jokeModel = snapshot.data;
+              return SafeArea(
+                child: Scaffold(
+                  appBar: AppBar(
+                    title: Center(
+                      child: Text(
+                        'What The Joke?',
+                        style: TextStyle(
+                          fontSize: 28,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
-                    onPressed: () {
-                      setState(() {
-                        getPostInfo();
-                      });
-                    },
                   ),
-                )
-              ],
-            ),
-          ),
-        );
+                  body: Column(
+                    children: <Widget>[
+                      Container(
+                        height: deviceSize.height * 1/8,
+                        width: deviceSize.width * 0.9,
+                        margin: EdgeInsets.all(20.0),
+                        child: Text(
+                          '${_jokeModel.setup.toString()}',
+                          softWrap: true,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: deviceSize.height * 1/8,
+                        width: deviceSize.width * 0.9,
+                        margin: EdgeInsets.all(10.0),
+                        child: Text(
+                          '${_jokeModel.delivery.toString()}',
+                          softWrap: true,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: deviceSize.height * 1 / 20,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.orange,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: MaterialButton(
+                          child: Text(
+                            'Next',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              getPostInfo();
+                            });
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            } else {
+              return Text('No Data');
+            }
+          }
+        }
       },
     );
   }
