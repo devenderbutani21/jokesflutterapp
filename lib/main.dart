@@ -15,8 +15,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Joke App',
       theme: ThemeData(
-        primarySwatch: Colors.orange,
-        // scaffoldBackgroundColor: Colors.deepOrangeAccent,
+        canvasColor: Colors.white,
+        appBarTheme: AppBarTheme(
+          color: Color(0xff88bef5),
+          elevation: 0,
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(),
@@ -44,39 +47,35 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    // getPostInfo();
   }
 
   @override
   build(BuildContext context) {
     Size deviceSize = MediaQuery.of(context).size;
+    final curScaleFactor = MediaQuery.of(context).textScaleFactor;
     return FutureBuilder<JokeModelTwoPart>(
       future: getPostInfo(),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return SafeArea(
-            child: Scaffold(
-              body: Center(
-                child: SizedBox(
-                  height: deviceSize.width / 8,
-                  width: deviceSize.width / 8,
-                  child: CircularProgressIndicator(),
-                ),
+          return Scaffold(
+            body: Center(
+              child: SizedBox(
+                height: deviceSize.width / 8,
+                width: deviceSize.width / 8,
+                child: CircularProgressIndicator(),
               ),
             ),
           );
         } else {
           if (snapshot.hasError) {
-            return SafeArea(
-              child: Scaffold(
-                body: Center(
-                  child: Text(
-                    snapshot.error.toString(),
-                    softWrap: true,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+            return Scaffold(
+              body: Center(
+                child: Text(
+                  snapshot.error.toString(),
+                  softWrap: true,
+                  style: TextStyle(
+                    fontSize: 24 * curScaleFactor,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -84,89 +83,85 @@ class _MyHomePageState extends State<MyHomePage> {
           } else {
             if (snapshot.hasData) {
               JokeModelTwoPart _jokeModel = snapshot.data;
-              return SafeArea(
-                child: Scaffold(
-                  appBar: AppBar(
-                    title: Center(
+              return Scaffold(
+                appBar: AppBar(
+                  title: Center(
+                    child: Text(
+                      'Jokely',
+                      style: TextStyle(
+                        fontSize: 28 * curScaleFactor,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+                body: Column(
+                  children: <Widget>[
+                    Container(
+                      height: deviceSize.height * 1 / 8,
+                      width: deviceSize.width * 0.9,
+                      margin: EdgeInsets.all(20.0),
                       child: Text(
-                        'What The Joke',
+                        '${_jokeModel.setup.toString()}',
+                        softWrap: true,
+                        textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 22 * curScaleFactor,
+                          fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
                       ),
                     ),
-                  ),
-                  body: Column(
-                    children: <Widget>[
-                      Container(
-                        height: deviceSize.height * 1 / 8,
-                        width: deviceSize.width * 0.9,
-                        margin: EdgeInsets.all(20.0),
+                    Container(
+                      height: deviceSize.height * 1 / 8,
+                      width: deviceSize.width * 0.9,
+                      margin: EdgeInsets.all(10.0),
+                      child: Text(
+                        '${_jokeModel.delivery.toString()}',
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22 * curScaleFactor,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: deviceSize.height * 1 / 20,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xfff88bef5),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: MaterialButton(
                         child: Text(
-                          '${_jokeModel.setup.toString()}',
-                          softWrap: true,
-                          textAlign: TextAlign.center,
+                          'Next',
                           style: TextStyle(
-                            fontSize: 22,
+                            fontSize: 24 * curScaleFactor,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
                           ),
                         ),
+                        onPressed: () {
+                          setState(() {
+                            getPostInfo();
+                          });
+                        },
                       ),
-                      Container(
-                        height: deviceSize.height * 1 / 8,
-                        width: deviceSize.width * 0.9,
-                        margin: EdgeInsets.all(10.0),
-                        child: Text(
-                          '${_jokeModel.delivery.toString()}',
-                          softWrap: true,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: deviceSize.height * 1 / 20,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: MaterialButton(
-                          child: Text(
-                            'Next',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              getPostInfo();
-                            });
-                          },
-                        ),
-                      )
-                    ],
-                  ),
+                    )
+                  ],
                 ),
               );
             } else {
-              return SafeArea(
-                child: Scaffold(
-                  body: Center(
-                    child: Text(
-                      'No Data',
-                      softWrap: true,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+              return Scaffold(
+                body: Center(
+                  child: Text(
+                    'No Data',
+                    softWrap: true,
+                    style: TextStyle(
+                      fontSize: 24 * curScaleFactor,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
